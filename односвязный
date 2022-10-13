@@ -1,0 +1,363 @@
+#include <iostream>
+#include <string>
+#include <climits>
+#include <string>
+#include <vector>
+
+using namespace std;
+
+
+struct time_ {
+    int hourTime, minutesTime;
+};
+
+struct Train {
+    int numberTrain;
+    string stationTrain;
+    int followingDaysTrain;
+    time_ timeOfArrivalTrain;
+    int timeOfStopTrain;
+    Train* nextTrain = 0;
+    //Train* pastTrain = 0;
+
+};
+
+
+class listTrain {
+private:
+    bool isItsimple;
+    int sizeOfTrainlist = 0;
+    //int MaxSizeOfTrainlist;
+    Train* beginTrainlist;
+    Train* endTrainlist;
+
+public:
+
+    listTrain(int simple) {
+        isItsimple = simple;
+        beginTrainlist = 0;
+        endTrainlist = 0;
+    }
+
+
+    void pushElementBegin(Train* newElement) {
+        Train* nElement = new Train;
+        nElement->numberTrain = newElement->numberTrain;
+        nElement->stationTrain = newElement->stationTrain;
+        nElement->timeOfArrivalTrain = newElement->timeOfArrivalTrain;
+        nElement->followingDaysTrain = newElement->followingDaysTrain;
+       
+            if (beginTrainlist) {
+                nElement->nextTrain = beginTrainlist;
+                beginTrainlist = nElement;
+            }
+            else {
+                beginTrainlist = nElement;
+                endTrainlist = nElement;
+
+            }
+
+        sizeOfTrainlist++;
+    }
+
+    void pushElementEnd(Train* newElement) {
+        Train* p = beginTrainlist;
+        Train* nElement = new Train;
+        nElement->numberTrain = newElement->numberTrain;
+        nElement->stationTrain = newElement->stationTrain;
+        nElement->timeOfArrivalTrain = newElement->timeOfArrivalTrain;
+        nElement->followingDaysTrain = newElement->followingDaysTrain;
+        
+            if (!endTrainlist) {
+                beginTrainlist = nElement;
+                endTrainlist = nElement;
+            }
+            else {
+                for (int i = 1; i < sizeOfTrainlist; i++) {
+                    p = p->nextTrain;
+                }
+                p->nextTrain = nElement;
+                endTrainlist = p->nextTrain;
+
+            }
+        
+        
+        sizeOfTrainlist++;
+    }
+
+    void popElementBegin() {
+        Train* p = beginTrainlist;
+        //cout << beginTrainlist->numberTrain;
+        beginTrainlist = beginTrainlist->nextTrain;
+        sizeOfTrainlist--;
+
+    }
+
+    void popElementEnd() {
+        Train* p = beginTrainlist;
+        endTrainlist = p;
+        sizeOfTrainlist--;
+
+    }
+
+    Train* searchIntElement(int (*selectorFunction)(Train*), int searchElement){
+        Train* indexOfNearestElement = 0;
+        int minimalDiff = INT_MAX;
+        Train* Element = beginTrainlist;
+
+        for (int i = 0; i < sizeOfTrainlist; i++) {
+            int valueDiff = abs(selectorFunction(Element) - searchElement);
+            if (valueDiff < minimalDiff) {
+                minimalDiff = valueDiff;
+                indexOfNearestElement = Element;
+            }
+            Element = Element->nextTrain;
+        }
+        if (indexOfNearestElement) { return indexOfNearestElement; }
+        else 
+            return NULL;
+
+    }
+
+    Train* searchStringElement(string (*selection)(Train*), string searchElem) {
+        Train* Element = beginTrainlist;
+        for (size_t i = 0; i < sizeOfTrainlist; i++) {
+            if (selection(Element).find(searchElem) != string::npos)
+                return Element;
+        }
+        return NULL;
+    }
+    void searchDelete(Train* elementForDelete) {
+        Train* p = beginTrainlist;
+        while (p->nextTrain != elementForDelete and p!=elementForDelete) {
+            p = p->nextTrain;
+        }
+        p->nextTrain->nextTrain = elementForDelete->nextTrain;
+        sizeOfTrainlist--;
+    }
+
+
+    void addAfterSearchInt(Train*add, Train* find) {
+        Train* p = beginTrainlist;
+        
+        Train* nElement = new Train;
+        nElement = add;
+        while (p != find) {
+            
+            p = p->nextTrain;
+        }
+        Train * temp_element = p->nextTrain;
+        p->nextTrain = nElement;
+        p->nextTrain->nextTrain = temp_element;
+        sizeOfTrainlist++;
+    };
+
+
+    
+
+    
+    Train* printBegin() {
+        Train* p = beginTrainlist;
+        return p;
+    }
+
+};
+
+int main()
+{
+    setlocale(LC_ALL, "Russian");
+    
+    
+    listTrain T(0);
+    Train newElement;
+    int numberTrain;
+    string stationTrain;
+    int followingDaysTrain;
+    time_ timeOfArrivalTrain;
+    int timeOfStopTrain;
+    char point;
+    Train* answear;
+    int value;
+    string value_str;
+    int whatTosearch;
+    int task;
+    vector<Train> answear_vector;
+    
+    
+    int instraction;
+    do {
+        cout << "1 - добавление элемента в конец списка" << endl << "2 - Добавление элемента в начало списка" << endl << "3 - удаление конечного элемента" << endl << "4 - удаление начального элемента" << endl << "5 - поиск элемента" <<endl<<"0 - выход из программы" << endl;
+        cin >> instraction;
+        switch (instraction) {
+        case 1:
+
+
+            cout << "Номер поезда: ";
+            cin >> newElement.numberTrain;
+            cout << "Пункт назначения: ";
+            cin >> newElement.stationTrain;
+            cout << "Дни в пути: ";
+            cin >> newElement.followingDaysTrain;;
+            cout << "Время прибытия(чч.мм): ";
+            cin >> newElement.timeOfArrivalTrain.hourTime >> point >> newElement.timeOfArrivalTrain.minutesTime;
+            T.pushElementEnd(&newElement);
+            break;
+        case 2:
+            cout << "Номер поезда: ";
+            cin >> newElement.numberTrain;
+            cout << "Пункт назначения: ";
+            cin >> newElement.stationTrain;
+            cout << "Дни в пути: ";
+            cin >> newElement.followingDaysTrain;;
+            cout << "Время прибытия(чч.мм): ";
+            cin >> newElement.timeOfArrivalTrain.hourTime >> point >> newElement.timeOfArrivalTrain.minutesTime;
+            T.pushElementBegin(&newElement);
+            break;
+        case 3:
+            T.popElementEnd();
+            break;
+        case 4:
+            T.popElementBegin();
+            break;
+        case 5:
+
+            cout << "Что будем искать: 1 - номер поезда, 2 - пункт назвачения, 3 - дни в пути, 4 - время прибытия" << endl;
+            cin >> whatTosearch;
+            switch (whatTosearch) {
+            case 1:
+
+                cout << "\nКакое значение искать?";
+                cin >> value;
+                answear = T.searchIntElement([](Train* p) { return p->numberTrain; }, value);
+                if (answear == NULL) cout << "Не найдено";
+                else {
+                    cout << answear->numberTrain << " " << answear->stationTrain << " " << answear->followingDaysTrain << " " << answear->timeOfArrivalTrain.hourTime << "." << answear->timeOfArrivalTrain.minutesTime << endl;
+                    cout << "Удалить элемент  - 6, вставить новый - 7, проспустить - 8" << endl;
+                    cin >> task;
+                    switch (task) {
+                    case 6:
+                        T.searchDelete(answear);
+                        break;
+                    case 7:
+                        cout << "Новый элемент для вставки после найденного";
+                        cout << "Номер поезда: ";
+                        cin >> newElement.numberTrain;
+                        cout << "Пункт назначения: ";
+                        cin >> newElement.stationTrain;
+                        cout << "Дни в пути: ";
+                        cin >> newElement.followingDaysTrain;;
+                        cout << "Время прибытия(чч.мм): ";
+                        cin >> newElement.timeOfArrivalTrain.hourTime >> point >> newElement.timeOfArrivalTrain.minutesTime;
+                        T.addAfterSearchInt(&newElement, answear);
+                        break;
+                    case 8:
+                        break;
+                    }
+                } break;
+            case 2:
+
+                cout << "\nКакое значение искать?";
+                cin >> value_str;
+                answear = T.searchStringElement([](Train* p) { return p->stationTrain; }, value_str);
+                if (answear == NULL) cout << "\nНе найдено";
+                else {
+                    cout << answear->numberTrain << " " << answear->stationTrain << " " << answear->followingDaysTrain << " " << answear->timeOfArrivalTrain.hourTime << "." << answear->timeOfArrivalTrain.minutesTime << endl;
+                    cout << "Удалить элемент  - 6, вставить новый - 7, проспустить - 8" << endl;
+                    cin >> task;
+                    switch (task) {
+                    case 6:
+                        T.searchDelete(answear);
+                        break;
+                    case 7:
+                        cout << "Новый элемент для вставки после найденного";
+                        cout << "Номер поезда: ";
+                        cin >> newElement.numberTrain;
+                        cout << "Пункт назначения: ";
+                        cin >> newElement.stationTrain;
+                        cout << "Дни в пути: ";
+                        cin >> newElement.followingDaysTrain;;
+                        cout << "Время прибытия(чч.мм): ";
+                        cin >> newElement.timeOfArrivalTrain.hourTime >> point >> newElement.timeOfArrivalTrain.minutesTime;
+                        T.addAfterSearchInt(&newElement, answear);
+                        break;
+                    case 8:
+                        break;
+                    }
+                } break;
+            case 3:
+
+                cout << "\nКакое значение искать?";
+                cin >> value;
+                answear = T.searchIntElement([](Train* p) {return p->followingDaysTrain; }, value);
+                if (answear == NULL) cout << "\nНе найдено";
+                else {
+                    cout << answear->numberTrain << " " << answear->stationTrain << " " << answear->followingDaysTrain << " " << answear->timeOfArrivalTrain.hourTime << "." << answear->timeOfArrivalTrain.minutesTime << endl;
+                    cout << "Удалить элемент  - 6, вставить новый - 7, проспустить - 8" << endl;
+                    cin >> task;
+                    switch (task) {
+                    case 6:
+                        T.searchDelete(answear);
+                        break;
+                    case 7:
+                        cout << "Новый элемент для вставки после найденного";
+                        cout << "Номер поезда: ";
+                        cin >> newElement.numberTrain;
+                        cout << "Пункт назначения: ";
+                        cin >> newElement.stationTrain;
+                        cout << "Дни в пути: ";
+                        cin >> newElement.followingDaysTrain;;
+                        cout << "Время прибытия(чч.мм): ";
+                        cin >> newElement.timeOfArrivalTrain.hourTime >> point >> newElement.timeOfArrivalTrain.minutesTime;
+                        T.addAfterSearchInt(&newElement, answear);
+                        break;
+                    case 8:
+                        break;
+                    }
+                }
+                    break;
+            case 4:
+
+                cout << "\nКакое значение искать?";
+                cin >> value;
+                answear = T.searchIntElement([](Train* p) {return p->timeOfArrivalTrain.minutesTime; }, value);
+                if (answear == NULL) cout << "\nНе найдено";
+                else {
+                    cout << answear->numberTrain << " " << answear->stationTrain << " " << answear->followingDaysTrain << " " << answear->timeOfArrivalTrain.hourTime << "." << answear->timeOfArrivalTrain.minutesTime << endl;
+                    cout << "Удалить элемент  - 6, вставить новый - 7, проспустить - 8" << endl;
+                    cin >> task;
+                    switch (task) {
+                    case 6:
+                        T.searchDelete(answear);
+                        break;
+                    case 7:
+                        cout << "Новый элемент для вставки после найденного";
+                        cout << "Номер поезда: ";
+                        cin >> newElement.numberTrain;
+                        cout << "Пункт назначения: ";
+                        cin >> newElement.stationTrain;
+                        cout << "Дни в пути: ";
+                        cin >> newElement.followingDaysTrain;;
+                        cout << "Время прибытия(чч.мм): ";
+                        cin >> newElement.timeOfArrivalTrain.hourTime >> point >> newElement.timeOfArrivalTrain.minutesTime;
+                        T.addAfterSearchInt(&newElement, answear);
+                        break;
+                    case 8:
+                        break;
+                    }
+                }break;
+            }
+
+        case -1:
+            answear = T.printBegin();
+            cout << answear->numberTrain << " " << answear->stationTrain << " " << answear->followingDaysTrain << " " << answear->timeOfArrivalTrain.hourTime << "." << answear->timeOfArrivalTrain.minutesTime << endl;
+            break;
+
+        default:
+            cout << "Неверные значения"<<endl;
+            break;
+}
+        
+        } while (instraction != 0);
+    
+    return 0;
+}
