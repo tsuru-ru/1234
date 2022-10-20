@@ -23,50 +23,78 @@ class BinaryTree{
         bin_tree* Root_BinaryTree = new bin_tree;
     }
     
-    void pushElement(int aElement){
+    void pushElement( int aElement){
         
         bin_node* newElement = new bin_node;
         newElement->data = aElement;
         newElement->left = NULL;
         newElement->right = NULL; 
-        
-        if (Root_BinaryTree != NULL){
-        bin_node* temp_for_push = Root_BinaryTree;
-            if (temp_for_push->data > aElement){
-                if(temp_for_push->left=NULL){
-                temp_for_push->left = newElement;
-                
-                    
-                }
-                else temp_for_push=temp_for_push->left;
-                
-            }
-            
-            if(temp_for_push->data < aElement){
-                if(temp_for_push->right=NULL){
-                temp_for_push->right = newElement;
-                
-                    
-                }
-                else temp_for_push=temp_for_push->right;
-            }
-            
-        }
-    
-
-        else {
-            
-        
-            Root_BinaryTree = newElement;
-        }
+        if (Root_BinaryTree!=0) _pushElement(aElement, Root_BinaryTree, newElement); 
+        else Root_BinaryTree = newElement;
+    count_BinaryTree++;
         
     }
     
-   void print(){
-        cout << Root_BinaryTree->data;
+    
+   void _pushElement(int aElement, bin_node* atemp, bin_node* anewp){
+         //cout << atemp<<endl;
+         //cout << atemp->left<<endl;
+         //cout << anewp << aElement<<endl;
+           if (atemp->data >= aElement){
+               //cout<<"ok"<<endl;
+                if(atemp->left==NULL){
+                    atemp->left=anewp;
+                    //cout<<"ok1"<<endl;
+                    
+                }
+                else {
+                    atemp=atemp->left;
+                _pushElement(aElement, atemp, anewp);
+                }
+            }
+            
+            else if(atemp->data < aElement){
+                if(atemp->right==0){
+                   atemp->right=anewp;
+                   //cout<<"g";
+                
+                }
+                else {
+                    atemp=atemp->right;
+                _pushElement(aElement, atemp, anewp);
+                    
+                }
+            }
+            else cout<<"no";
+            
+        }
+    
+    
+   /*void print(){
+       //cout << Root_BinaryTree->left;
+       
+       bin_node* temp = Root_BinaryTree;
+       for(int i = 0; i < count_BinaryTree; i++){
+           cout << temp->data;
+           if (temp->left) temp = temp->left;
+           else if (temp->right) temp=temp->right;
+        
         //Root_BinaryTree->root->data;
-    }
+       }
+    }*/
     
+    void print(bin_node* t, int a)
+{ //bin_node* t = Root_BinaryTree;
+    if (t == NULL) return;  
+    for (int i = 0; i<a; ++i) cout << "|";
+    cout << t->data << endl; //И показываем элемент
+    
+    print(t->left, --a);//С помощью рекурсивного посещаем левое поддерево
+    print(t->right, ++++a); //С помощью рекурсии посещаем правое поддерево
+}
+    void printing(){
+        print(Root_BinaryTree, count_BinaryTree / 2);
+    }
     
 };
 
@@ -75,7 +103,11 @@ class BinaryTree{
 int main(){
     BinaryTree T;
     
-    T.pushElement(1);
-    T.print();
+    T.pushElement(19);
+    T.pushElement(03);
+    T.pushElement(20);
+    T.pushElement(03);
+    //T.pushElement(2);
+    T.printing();
     return 0;
 }
