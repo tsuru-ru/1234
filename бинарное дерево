@@ -1,0 +1,81 @@
+# include <iostream>
+using namespace std;
+
+struct bin_node
+{
+int data;
+struct bin_node *left;
+struct bin_node *right;
+};
+
+struct bin_tree
+{
+struct bin_node *root; 
+};
+
+class BinaryTree{
+    private:
+    bin_node* Root_BinaryTree = NULL;
+    int count_BinaryTree = 0;
+    
+    public:
+    BinaryTree(){
+        bin_tree* Root_BinaryTree = new bin_tree;
+    }
+    
+    void pushElement(int aElement){
+        
+        bin_node* newElement = new bin_node;
+        newElement->data = aElement;
+        newElement->left = NULL;
+        newElement->right = NULL; 
+        
+        if (Root_BinaryTree != NULL){
+        bin_node* temp_for_push = Root_BinaryTree;
+            if (temp_for_push->data > aElement){
+                if(temp_for_push->left=NULL){
+                temp_for_push->left = newElement;
+                
+                    
+                }
+                else temp_for_push=temp_for_push->left;
+                
+            }
+            
+            if(temp_for_push->data < aElement){
+                if(temp_for_push->right=NULL){
+                temp_for_push->right = newElement;
+                
+                    
+                }
+                else temp_for_push=temp_for_push->right;
+            }
+            
+        }
+    
+
+        else {
+            
+        
+            Root_BinaryTree = newElement;
+        }
+        
+    }
+    
+   void print(){
+        cout << Root_BinaryTree->data;
+        //Root_BinaryTree->root->data;
+    }
+    
+    
+};
+
+
+
+int main(){
+    BinaryTree T;
+    
+    T.pushElement(1);
+    T.print();
+    return 0;
+}
