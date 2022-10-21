@@ -1,113 +1,105 @@
 # include <iostream>
+#include <iomanip>
+#include <stdio.h>
 using namespace std;
 
 struct bin_node
 {
-int data;
-struct bin_node *left;
-struct bin_node *right;
+    int data;
+    struct bin_node* left;
+    struct bin_node* right;
 };
 
 struct bin_tree
 {
-struct bin_node *root; 
+    struct bin_node* root;
 };
 
-class BinaryTree{
-    private:
+class BinaryTree {
+private:
     bin_node* Root_BinaryTree = NULL;
     int count_BinaryTree = 0;
-    
-    public:
-    BinaryTree(){
+
+public:
+    BinaryTree() {
         bin_tree* Root_BinaryTree = new bin_tree;
     }
-    
-    void pushElement( int aElement){
-        
+
+    void pushElement(int aElement) {
+
         bin_node* newElement = new bin_node;
         newElement->data = aElement;
         newElement->left = NULL;
-        newElement->right = NULL; 
-        if (Root_BinaryTree!=0) _pushElement(aElement, Root_BinaryTree, newElement); 
+        newElement->right = NULL;
+        if (Root_BinaryTree != 0) _pushElement(aElement, Root_BinaryTree, newElement);
         else Root_BinaryTree = newElement;
-    count_BinaryTree++;
-        
+        count_BinaryTree++;
+
     }
-    
-    
-   void _pushElement(int aElement, bin_node* atemp, bin_node* anewp){
-         //cout << atemp<<endl;
-         //cout << atemp->left<<endl;
-         //cout << anewp << aElement<<endl;
-           if (atemp->data >= aElement){
-               //cout<<"ok"<<endl;
-                if(atemp->left==NULL){
-                    atemp->left=anewp;
-                    //cout<<"ok1"<<endl;
-                    
-                }
-                else {
-                    atemp=atemp->left;
-                _pushElement(aElement, atemp, anewp);
-                }
+
+    bin_node* get() {
+        return Root_BinaryTree;
+    }
+    void _pushElement(int aElement, bin_node* atemp, bin_node* anewp) {
+        
+        if (atemp->data >= aElement) {
+            if (atemp->left == NULL) {
+                atemp->left = anewp;
+
             }
-            
-            else if(atemp->data < aElement){
-                if(atemp->right==0){
-                   atemp->right=anewp;
-                   //cout<<"g";
+            else {
+                atemp = atemp->left;
+                _pushElement(aElement, atemp, anewp);
+            }
+        }
+
+        else if (atemp->data < aElement) {
+            if (atemp->right == 0) {
+                atemp->right = anewp;
                 
-                }
-                else {
-                    atemp=atemp->right;
-                _pushElement(aElement, atemp, anewp);
-                    
-                }
+
             }
-            else cout<<"no";
+            else {
+                atemp = atemp->right;
+                _pushElement(aElement, atemp, anewp);
+
+            }
+        }
+        else cout << "no";
+
+    }
+
+
+    
+
+    void print(bin_node* t, int a)
+    {  FILE* file = fopen("3.txt", "a");
+
+
+        if (t) {
+            
+            
+            fprintf(file, "%d ",t->data);
+            fclose(file);
+            print(t->left, a-3);
+            print(t->right,  a+3 );
             
         }
-    
-    
-   /*void print(){
-       //cout << Root_BinaryTree->left;
-       
-       bin_node* temp = Root_BinaryTree;
-       for(int i = 0; i < count_BinaryTree; i++){
-           cout << temp->data;
-           if (temp->left) temp = temp->left;
-           else if (temp->right) temp=temp->right;
         
-        //Root_BinaryTree->root->data;
-       }
-    }*/
-    
-    void print(bin_node* t, int a)
-{ //bin_node* t = Root_BinaryTree;
-    if (t == NULL) return;  
-    for (int i = 0; i<a; ++i) cout << "|";
-    cout << t->data << endl; //И показываем элемент
-    
-    print(t->left, --a);//С помощью рекурсивного посещаем левое поддерево
-    print(t->right, ++++a); //С помощью рекурсии посещаем правое поддерево
-}
-    void printing(){
-        print(Root_BinaryTree, count_BinaryTree / 2);
     }
-    
+
+
 };
 
 
 
-int main(){
+int main() {
     BinaryTree T;
-    
-    T.pushElement(19);
-    T.pushElement(03);
-    T.pushElement(20);
-    T.pushElement(03);
-    //T.pushElement(2);
-    T.printing();
+    int data[13] = { 19, 3, 20, 03, 1, 9, 20, 21, 92, 74, 78, 24, 80 };
+    for (int i = 0; i < 13; i++) {
+        T.pushElement(data[i]);
+    }
+    T.print(T.get(), 1);
+
     return 0;
 }
