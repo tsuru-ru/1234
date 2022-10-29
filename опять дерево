@@ -19,11 +19,11 @@ class BinaryTree {
 private:
     bin_node* Root_BinaryTree = NULL;
     int count_BinaryTree = 0;
-   
+
 public:
     BinaryTree() {
         bin_tree* Root_BinaryTree = new bin_tree;
-        
+
     }
 
     void pushElement(int aElement) {
@@ -32,7 +32,7 @@ public:
         newElement->data = aElement;
         newElement->left = NULL;
         newElement->right = NULL;
-        if (Root_BinaryTree != 0) _pushElement( Root_BinaryTree, newElement);
+        if (Root_BinaryTree != 0) _pushElement(Root_BinaryTree, newElement);
         else Root_BinaryTree = newElement;
         count_BinaryTree++;
 
@@ -40,11 +40,11 @@ public:
 
     bin_node* get_rootBinaryTree() {
         return Root_BinaryTree;
-        
+
     }
-    
-    void _pushElement( bin_node* atemp, bin_node* anewp) {
-        
+
+    void _pushElement(bin_node* atemp, bin_node* anewp) {
+
         if (atemp->data >= anewp->data) {
             if (atemp->left == NULL) {
                 atemp->left = anewp;
@@ -52,14 +52,14 @@ public:
             }
             else {
                 atemp = atemp->left;
-                _pushElement( atemp, anewp);
+                _pushElement(atemp, anewp);
             }
         }
 
         else if (atemp->data < anewp->data) {
             if (atemp->right == 0) {
                 atemp->right = anewp;
-                
+
 
             }
             else {
@@ -68,24 +68,24 @@ public:
 
             }
         }
-       
+
 
     }
 
 
-    bin_node* searchElement(bin_node* atemp, int element_forSearch){
+    bin_node* searchElement(bin_node* atemp, int element_forSearch) {
         if (atemp->data > element_forSearch) {
             if (atemp->left != NULL) {
                 searchElement(atemp->left, element_forSearch);
 
             }
-            else return NULL;  
+            else return NULL;
         }
 
         else if (atemp->data < element_forSearch) {
             if (atemp->right != 0) {
                 searchElement(atemp->right, element_forSearch);
-                
+
 
             }
             else {
@@ -97,85 +97,112 @@ public:
     }
 
     void print(bin_node* t, int a)
-    {  
+    {
         FILE* file = fopen("BinaryTree.txt", "a");
-       
-       
+
+
 
         if (t != NULL) {
-            
-            cout << setw(20-a) << t->data << endl;
-            fprintf(file, "%d ",t->data);
+
+            cout << setw(20 - a) << t->data << endl;
+            fprintf(file, "%d ", t->data);
             fclose(file);
             print(t->left, a + 4);
             print(t->right, a - 4);
-            
+
         }
         else {
-            cout << setw(20-a) << 0 << endl;
+            cout << setw(20 - a) << 0 << endl;
             fprintf(file, "__ ");
             fclose(file);
-           
+
         }
     }
-    
-    void de(int aelem){
-        
-    }
-    
-    void delete_element(bin_node* parent, bin_node* atemp, int element_forSearch, int f){
-        
-        if (atemp->data > element_forSearch) {
-            if (atemp->left != NULL) {
-                delete_element(atemp, atemp->left, element_forSearch, 1);
 
-            }
-            //else return NULL;  
-        }
+  
 
-        else if (atemp->data < element_forSearch) {
-            if (atemp->right != 0) {
-                delete_element(atemp, atemp->right, element_forSearch, 0);
-                
-
-            }
-            else {
-                //return NULL;
-
-            }
-        }
-        else if (atemp->data == element_forSearch) {
-            if(atemp->left == NULL and atemp->right == NULL){
-                if(f) parent->left = NULL;
-                else parent->right = NULL;
-                delete atemp;
-                
-            }
-            if(atemp->left == NULL){
-                if(f) parent->left = atemp->right;
-                else parent->right = atemp->right;
-                delete atemp;
-            }
-            if(atemp->right == NULL){
-                if(f) parent->left = atemp->left;
-                else parent->right = atemp->left;
-                delete atemp;
-            }
-            if(atemp->left != NULL and atemp->right != NULL){
-                atemp = atemp->right;
-                while (atemp->left != NULL) atemp = atemp->left;
-                if(f) parent->left = atemp;
-                else parent->right = atemp;
-            }
-        }
-        
-    }
+    void deleteElement(int aElement) {
+        bin_node* element_now = Root_BinaryTree;
+        bin_node* parent = NULL;
+        while (element_now->data != aElement) {
             
+            if (element_now->data < aElement) {
+                parent = element_now;
+                element_now = element_now->right;
+            }
+            if(element_now->data > aElement) {
+                parent = element_now;
+                element_now = element_now->left;
+            }
+        }
+        //cout << count_BinaryTree;
+        if (count_BinaryTree == 1) {
+            Root_BinaryTree = NULL;
+            throw 0;
+        }
         
+         else if (element_now->left == NULL and element_now->right == NULL) {
+            
+                if (parent->right == element_now and parent != NULL) parent->right = NULL;
+                if (parent->left == element_now and parent != NULL)  parent->left = NULL;
+                element_now = NULL;
+                count_BinaryTree--;
+            
+            
+            return;
+        }
+        else if (element_now->left == NULL) {
+            
+            
+            if (parent != NULL){
+            if (parent->right == element_now) parent->right = element_now->right;
+            else { parent->left = element_now->right; }
+             
+            element_now = NULL;}
+            else { Root_BinaryTree = element_now->right;
+            //cout << element_now->data;
+            }
+            count_BinaryTree--;
+            return;
+        }
+        else if (element_now->right == NULL) {
+            
+            //cout << parent->data << "-" << element_now->left->data;
+            if(parent != NULL){
+            if (parent->left == element_now) parent->left = element_now->left;
+            else { parent->right = element_now->left; }
+            
+            //cout << parent->right->data << "-";
+            element_now = NULL;}
+            else Root_BinaryTree = element_now->left;
+            count_BinaryTree--;
+            return;
+        }
+
+         else if (element_now->left != NULL and element_now->right != NULL) {
+            bin_node* anew = element_now;
+            element_now = element_now->right;
+            while (element_now->left != NULL) element_now = element_now->left;
+            deleteElement(element_now->data);
+            anew->data = element_now->data;
+            //count_BinaryTree--;
+            return;
+
+
+        }
+
+    }
+
+
     
-        
+
     
-    
+
+
+
+
+
+
 
 };
 
@@ -185,17 +212,29 @@ int main() {
     BinaryTree MyTree;
     bin_node* search;
     int searching;
-    int data[13] = { 19, 3, 20, 03, 1, 9, 20, 21, 92, 74, 78, 24, 80 };
+    int data[13] = { 19, 03, 20, 3, 1, 9, 20, 21, 92, 74, 78, 24, 80 };
     for (int i = 0; i < 13; i++) {
         MyTree.pushElement(data[i]);
     }
     MyTree.print(MyTree.get_rootBinaryTree(), 0);
-    cout << "Введите элемент для поиска: ";
-    cin >> searching;
-    search = MyTree.searchElement(MyTree.get_rootBinaryTree(), searching);
-    if (search) cout << search<< "- такой элемент есть.\n";
-    else cout << "Не найдено.\n";
-    MyTree.delete_element(MyTree.get_rootBinaryTree(), MyTree.get_rootBinaryTree(), searching, 0);
-    MyTree.print(MyTree.get_rootBinaryTree(), 0);
+    do {
+        cout << "Введите элемент для удаления, ввод -1 закроет программу: ";
+        cin >> searching;
+        search = MyTree.searchElement(MyTree.get_rootBinaryTree(), searching);
+        if (search) {
+            cout <<"Такой элемент есть.\n";
+            try {
+                MyTree.deleteElement(searching);
+                MyTree.print(MyTree.get_rootBinaryTree(), 0);
+            }
+            catch (int empty) {
+                cout << "Дерево пустое";
+                searching = -1;
+            }
+        }
+        else cout << "Не найдено.\n";
+        
+    } while (searching != -1);
+    
     return 0;
 }
