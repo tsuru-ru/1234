@@ -9,7 +9,8 @@ using namespace std;
 
 class Graph {
 private:
-
+    int begin_index;
+    int end_index;
     int size_Graph;
     int waySize_Graph;
     vector<int> FIKS;
@@ -48,6 +49,7 @@ public:
             temp.push_back(INT_MAX);
 
         }
+        begin_index = begin;
         int a;
         for (int i = 0; i < size_Graph; i++) {
             DUG[i][i] = INT_MAX;
@@ -71,114 +73,33 @@ public:
 
     };
 
-    void D() {
-        /*for(int j = 0; j < size_Graph; j++){
-            min = INT_MAX;
-            min_index = INT_MAX;
-            
-            for(int i = 0; i < size_Graph; i++){
-                
-            if(FIKS[i] == 0 and MIN_WEG[i] < min){
-            
-                min = MIN_WEG[i];
-                min_index = i;
-                cout << i << " "<< MIN_WEG[i] << endl;
-                
-            
-            
-            
-            if(MIN_WEG[i] > min + DUG[min_index][i]){
-            MIN_WEG[i] = min +  DUG[min_index][i];
-            VON_PUNKT[i] = min_index;
-            }
-            }
-            //
-            }
-            FIKS[j] = 1;
-            
-        }
+    void D(int end) {
         
-        
-           
-            
-       
-       
-             for(int i = 1; i < size_Graph; i++){
-            
-            if(FIKS[i] == 0 and MIN_WEG[i] < min){
-                min = MIN_WEG[i];
-                min_index = i;
-                
-                
-                
-            if(MIN_WEG[i] > MIN_WEG[min_index] + DUG[min_index][i]){
-            MIN_WEG[i] = MIN_WEG[min_index] + DUG[min_index][i];
-            VON_PUNKT[i] = min_index;
-            }
-            FIKS[i] = 1;
-            
-        }
-               
-            }
-        for (int i = 0; i < size_Graph; i++) {
-            cout << MIN_WEG[i] << endl;
-        }
-        
-        do {
-             min = INT_MAX;
-             min_index = INT_MAX;
-
-            for (int i = 0; i < size_Graph; i++)
-            { 
-                if ((FIKS[i] == 0) && (MIN_WEG[i] < min))
-                { 
-                    min = MIN_WEG[i];
-                    min_index = i;
-                }
-            }
-            
-            if (min_index != INT_MAX)
-            {
-                for (int i = 0; i < size_Graph; i++)
-                {
-                    if (DUG[min_index][i] > 0)
-                    {
-                        temp = min + DUG[min_index][i];
-                        if (temp < MIN_WEG[i])
-                        {
-                            MIN_WEG[i] = temp;
-                        }
-                    }
-                }
-                FIKS[min_index] = 0;
-            }
-        } while (min_index < INT_MAX);*/
-       // cout << min;
-       
+    end_index = end;
+    
     do{   
     min_index = INT_MAX;
     min = INT_MAX;
     int temp;
-    for (int i = 0; i<size_Graph; i++)
-    { 
+    for (int i = 0; i<size_Graph; i++){ 
       if ((FIKS[i] == 0) and (MIN_WEG[i] < min))
       { 
         min = MIN_WEG[i];
         min_index = i;
-        cout << i;
+       
       }
     }
     
-    if (min_index != INT_MAX)
-    {
-      for (int i = 0; i<size_Graph; i++)
-      {
-        if (DUG[min_index][i] < INT_MAX and FIKS[i] == 0)
-        {
+    if (min_index != INT_MAX){
+      for (int i = 0; i<size_Graph; i++){
+           
+        if (DUG[min_index][i] < INT_MAX and FIKS[i] == 0){ 
+           
           temp = min + DUG[min_index][i];
           if (temp < MIN_WEG[i])
           {
             MIN_WEG[i] = temp;
+            
           }
         }
       }
@@ -186,16 +107,74 @@ public:
     }
     }while(min_index < INT_MAX);
   
-  for (int i = 0; i < size_Graph; i++) {
+  /*for (int i = 0; i < size_Graph; i++) {
             cout << MIN_WEG[i] << endl;
-        }
+        }*/
         
+  
+  //cout << end_index << begin_index;
+  VON_PUNKT[0] = end_index + 1; 
+  int k = 1;
+  int weight = MIN_WEG[end_index]; 
+  
+      while(begin_index != end_index){
+      
+   for(int i = 0; i < size_Graph; i++){
+      if (DUG[i][end_index] < INT_MAX){
+         // cout<<DUG[i][end_index]<< " "<<weight - DUG[i][end_index] << " " << MIN_WEG[i]<< endl;
+          if(weight - DUG[i][end_index] == MIN_WEG[i] or weight - DUG[i][end_index] == 0){
+              VON_PUNKT[k] = i + 1;
+              k++;
+              weight = weight - DUG[i][end_index];
+              end_index = i;
+              //cout << end_index << begin_index << endl;
+          }
+      };
+  }
+      }
+      
+ /*while (end_index != begin_index) 
+
+  {
+
+   for (int i = 0; i < size_Graph; i++) 
+
+    if (DUG[i][end_index] < INT_MAX) 
+
+    {
+
+     int length = weight - DUG[i][end_index]; 
+
+     if (length == MIN_WEG[i]) 
+
+     { 
+
+      weight = length;
+
+      end_index = i; 
+
+      MIN_WEG[k] = i + 1; 
+
+      k++;
+
+     }
+
+    }
+
+  }
+     for (int i = 0; i < size_Graph; i++) {
+            cout << VON_PUNKT[i] << endl;
+        }   */
     };
 
     void print() {
-        for (int i = 0; i < size_Graph; i++) {
-            cout << MIN_WEG[i] << endl;
-        }
+        for(int i = size_Graph - 1; i >= 0; i--){
+            if(VON_PUNKT[i] != 0){
+                cout << VON_PUNKT[i];
+            }
+        
+        };
+        
 
     }
     
@@ -206,7 +185,7 @@ int main()
 {
     Graph Graph1(6);
     Graph1.make_Graph(0);
-    Graph1.D();
-    //Graph1.print();
+    Graph1.D(4);
+    Graph1.print();
     return 0;
 };
