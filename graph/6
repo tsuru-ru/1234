@@ -1,68 +1,212 @@
 #include <iostream>
+#include <stdio.h>
+#include <limits.h>
+#include <stdlib.h>
+#include <vector>
 
 using namespace std;
 
 
+class Graph {
+private:
 
-
-
-int main()
-{   int size = 10; 
-
-int FIKS[size]; // проход
-int MIN_WEG[size]; // текущие расстояния 
-int VON_PUNKT[size]; // номера вершин пути из А в В
-int DUG[size][size]; // длины между дугами
-
-    int A = 1;
-    int min_ = 100000;
-    int min_index = 10000;
-    int temp; 
+    int size_Graph;
+    int waySize_Graph;
+    vector<int> FIKS;
+    vector<int> MIN_WEG;
+    vector<int> VON_PUNKT;
+    vector< vector<int> > DUG;
+    int min = INT_MAX;
+    int min_index = INT_MAX;
+    int max = INT_MAX;
     
-    for (int i = 0; i < size; i++){
-        DUG[i][i] = 0;
-        for (int j = i + 1; j < size; j++) {
-            printf("Введите расстояние %d - %d: ", i + 1, j + 1);
-            scanf("%d", &temp);
-            DUG[i][j] = temp;
-            DUG[j][i] = temp;
+public:
+
+
+
+    Graph(int size) {
+        size_Graph = size;
+        FIKS.reserve(size_Graph);
+        MIN_WEG.reserve(size_Graph);
+        VON_PUNKT.reserve(size_Graph);
+        DUG.reserve(size_Graph);
+        
+        
+        for (int i = 0; i < size_Graph; i++) {
+            FIKS.push_back(0);
+            VON_PUNKT.push_back(0);
+            //MIN_WEG.push_back(max);
+            vector<int> temp(size_Graph);
+            DUG.push_back(temp);
+        }
+        //MIN_WEG[0] = 0;
+    };
+
+    void make_Graph(int begin) {
+        vector<int> temp(size_Graph);
+        for (int i = 0; i < size_Graph; i++) {
+            temp.push_back(INT_MAX);
+
+        }
+        int a;
+        for (int i = 0; i < size_Graph; i++) {
+            DUG[i][i] = INT_MAX;
+            for (int j = i + 1; j < size_Graph; j++) {
+                printf("Введите расстояние %d - %d: ", i + 1, j + 1);
+                cin >> a;
+                if(a == 0) {a = INT_MAX;};
+                
+                DUG[i][j] = a;
+                DUG[j][i] = a;
+            }
+            
+        }
+        for(int i = 0; i < size_Graph; i++){
+            MIN_WEG[i] = DUG[begin][i];
+        }
+        FIKS[begin] = 1;
+        VON_PUNKT[0] = 0;
+        
+        
+
+    };
+
+    void D() {
+        /*for(int j = 0; j < size_Graph; j++){
+            min = INT_MAX;
+            min_index = INT_MAX;
+            
+            for(int i = 0; i < size_Graph; i++){
+                
+            if(FIKS[i] == 0 and MIN_WEG[i] < min){
+            
+                min = MIN_WEG[i];
+                min_index = i;
+                cout << i << " "<< MIN_WEG[i] << endl;
+                
+            
+            
+            
+            if(MIN_WEG[i] > min + DUG[min_index][i]){
+            MIN_WEG[i] = min +  DUG[min_index][i];
+            VON_PUNKT[i] = min_index;
+            }
+            }
+            //
+            }
+            FIKS[j] = 1;
             
         }
         
-    }
-
-    do{for(int i = 0; i < size; i++){
-        FIKS[i] = 0;
-        VON_PUNKT[size] = A;
-        for(int j = 0; j < size; j++){
-            MIN_WEG[i] = DUG[i][j];
+        
+           
+            
+       
+       
+             for(int i = 1; i < size_Graph; i++){
+            
+            if(FIKS[i] == 0 and MIN_WEG[i] < min){
+                min = MIN_WEG[i];
+                min_index = i;
+                
+                
+                
+            if(MIN_WEG[i] > MIN_WEG[min_index] + DUG[min_index][i]){
+            MIN_WEG[i] = MIN_WEG[min_index] + DUG[min_index][i];
+            VON_PUNKT[i] = min_index;
+            }
+            FIKS[i] = 1;
+            
         }
-        FIKS[i] = 1; 
-        VON_PUNKT[i] = 0;
-    }
-    
-    
-    for(int i = 0; i < size; i++){
-        if (FIKS[i] != 1 and MIN_WEG[i] < min_){
-            min_ = MIN_WEG[i];
-            min_index = i;
+               
+            }
+        for (int i = 0; i < size_Graph; i++) {
+            cout << MIN_WEG[i] << endl;
         }
         
-        }
-    
-    if (min_index != 10000){
-            for(int i = 0; i<size;i++){
-                if (DUG[min_index][i] > 0 ){
-                    temp = min_ + DUG[min_index][i];
-                    if (temp < MIN_WEG[i]){
-                        MIN_WEG[i] = temp;
-                    }
+        do {
+             min = INT_MAX;
+             min_index = INT_MAX;
+
+            for (int i = 0; i < size_Graph; i++)
+            { 
+                if ((FIKS[i] == 0) && (MIN_WEG[i] < min))
+                { 
+                    min = MIN_WEG[i];
+                    min_index = i;
                 }
             }
+            
+            if (min_index != INT_MAX)
+            {
+                for (int i = 0; i < size_Graph; i++)
+                {
+                    if (DUG[min_index][i] > 0)
+                    {
+                        temp = min + DUG[min_index][i];
+                        if (temp < MIN_WEG[i])
+                        {
+                            MIN_WEG[i] = temp;
+                        }
+                    }
+                }
+                FIKS[min_index] = 0;
+            }
+        } while (min_index < INT_MAX);*/
+       // cout << min;
+       
+    do{   
+    min_index = INT_MAX;
+    min = INT_MAX;
+    int temp;
+    for (int i = 0; i<size_Graph; i++)
+    { 
+      if ((FIKS[i] == 0) and (MIN_WEG[i] < min))
+      { 
+        min = MIN_WEG[i];
+        min_index = i;
+        cout << i;
+      }
     }
-    FIKS[min_index] = 0;
-        
-    }while(min_index<10000);
     
+    if (min_index != INT_MAX)
+    {
+      for (int i = 0; i<size_Graph; i++)
+      {
+        if (DUG[min_index][i] < INT_MAX and FIKS[i] == 0)
+        {
+          temp = min + DUG[min_index][i];
+          if (temp < MIN_WEG[i])
+          {
+            MIN_WEG[i] = temp;
+          }
+        }
+      }
+      FIKS[min_index] = 1;
+    }
+    }while(min_index < INT_MAX);
+  
+  for (int i = 0; i < size_Graph; i++) {
+            cout << MIN_WEG[i] << endl;
+        }
+        
+    };
+
+    void print() {
+        for (int i = 0; i < size_Graph; i++) {
+            cout << MIN_WEG[i] << endl;
+        }
+
+    }
+    
+    
+};
+
+int main()
+{
+    Graph Graph1(6);
+    Graph1.make_Graph(0);
+    Graph1.D();
+    //Graph1.print();
     return 0;
-}
+};
