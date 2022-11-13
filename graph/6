@@ -3,6 +3,8 @@
 #include <limits.h>
 #include <stdlib.h>
 #include <vector>
+#include <fstream>
+#include <string>
 
 using namespace std;
 
@@ -24,7 +26,6 @@ private:
 public:
 
 
-
     Graph(int size) {
         size_Graph = size;
         FIKS.reserve(size_Graph);
@@ -40,10 +41,34 @@ public:
             vector<int> temp(size_Graph);
             DUG.push_back(temp);
         }
-        //MIN_WEG[0] = 0;
+        
     };
-
-    void make_Graph(int begin) {
+    
+    
+    void read(string name){
+        int arr[size_Graph][size_Graph];
+    
+    
+    string path = name;
+    ifstream fin;
+    fin.open(path);
+    
+        
+        for (int i = 0; i < size_Graph; i++)
+        {
+            for (int j = 0; j < size_Graph; j++)
+            {
+                fin >> arr[i][j];
+                if(arr[i][j] == 0){DUG[i][j] = INT_MAX; }
+                else DUG[i][j] = arr[i][j];
+            }
+        }
+    
+    
+    };
+    
+    
+   void make_Graph(int begin) {
         vector<int> temp(size_Graph);
         for (int i = 0; i < size_Graph; i++) {
             temp.push_back(INT_MAX);
@@ -53,14 +78,7 @@ public:
         int a;
         for (int i = 0; i < size_Graph; i++) {
             DUG[i][i] = INT_MAX;
-            for (int j = i + 1; j < size_Graph; j++) {
-                printf("Введите расстояние %d - %d: ", i + 1, j + 1);
-                cin >> a;
-                if(a == 0) {a = INT_MAX;};
-                
-                DUG[i][j] = a;
-                DUG[j][i] = a;
-            }
+            
             
         }
         for(int i = 0; i < size_Graph; i++){
@@ -70,7 +88,7 @@ public:
         VON_PUNKT[0] = 0;
         
         
-
+    
     };
 
     void D(int end) {
@@ -107,85 +125,82 @@ public:
     }
     }while(min_index < INT_MAX);
   
-  /*for (int i = 0; i < size_Graph; i++) {
-            cout << MIN_WEG[i] << endl;
-        }*/
+  
         
   
-  //cout << end_index << begin_index;
-  VON_PUNKT[0] = end_index + 1; 
+  int _end_index = end_index;
+  VON_PUNKT[0] = _end_index + 1; 
   int k = 1;
-  int weight = MIN_WEG[end_index]; 
+  int weight = MIN_WEG[_end_index]; 
   
-      while(begin_index != end_index){
+      while(begin_index != _end_index){
       
    for(int i = 0; i < size_Graph; i++){
-      if (DUG[i][end_index] < INT_MAX){
-         // cout<<DUG[i][end_index]<< " "<<weight - DUG[i][end_index] << " " << MIN_WEG[i]<< endl;
-          if(weight - DUG[i][end_index] == MIN_WEG[i] or weight - DUG[i][end_index] == 0){
+       if (DUG[i][_end_index] < INT_MAX){
+           if(weight - DUG[i][_end_index] == MIN_WEG[i] or weight - DUG[i][_end_index] == 0){
               VON_PUNKT[k] = i + 1;
               k++;
-              weight = weight - DUG[i][end_index];
-              end_index = i;
-              //cout << end_index << begin_index << endl;
-          }
-      };
-  }
+              weight = weight - DUG[i][_end_index];
+              _end_index = i;
+              //cout << 1 << endl;
+             
+           };
+           
+       }
+       
+   }
+      //
+          
       }
-      
- /*while (end_index != begin_index) 
-
-  {
-
-   for (int i = 0; i < size_Graph; i++) 
-
-    if (DUG[i][end_index] < INT_MAX) 
-
-    {
-
-     int length = weight - DUG[i][end_index]; 
-
-     if (length == MIN_WEG[i]) 
-
-     { 
-
-      weight = length;
-
-      end_index = i; 
-
-      MIN_WEG[k] = i + 1; 
-
-      k++;
-
-     }
-
-    }
-
-  }
-     for (int i = 0; i < size_Graph; i++) {
-            cout << VON_PUNKT[i] << endl;
-        }   */
     };
 
     void print() {
+        FILE * file = fopen ( "way.txt" , "a" );
+        fprintf(file, "%d ", begin_index + 1);
+        fprintf(file, "%d ", end_index + 1);
         for(int i = size_Graph - 1; i >= 0; i--){
-            if(VON_PUNKT[i] != 0){
-                cout << VON_PUNKT[i];
+            if(VON_PUNKT[i] != 0 ){
+                fprintf(file, "%d ", VON_PUNKT[i]);
+                
             }
         
-        };
-        
-
     }
+    fprintf(file, "\n");
+    fclose(file);
+
+    
+    }
+   
+    
     
     
 };
 
 int main()
-{
-    Graph Graph1(6);
-    Graph1.make_Graph(0);
-    Graph1.D(4);
+{   int instruction;
+int size;
+int begin;
+int end;
+string file_name;
+    do{
+    cout << "Введите размер графа: ";
+    cin >> size;
+    Graph Graph1(size);
+    cout << "Введите название файла с графом. Не забудьте написать его расширение! : " << endl;
+    cin >> file_name;
+    Graph1.read(file_name);
+    cout << "Введите начальную вершину " ;
+    cin >> begin;
+    cout << "Введите конечную вершину " ;
+    cin >> end;
+    Graph1.make_Graph(begin - 1);
+    Graph1.D(end - 1);
     Graph1.print();
+    cout << "Ваш путь от " << begin << " до " << end << "находится в файле way.txt" << endl;
+    cout << "Введите 0, если хотите закончить. Чтобы продолжить введите любое другое число.";
+    cin >> instruction;
+}while(instruction != 0);
     return 0;
 };
+
+
